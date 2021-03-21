@@ -16,8 +16,8 @@ The specs are stored inside the `openapi` folder.
 
 To view the specs, either use [Swagger Editor](https://editor.swagger.io/) and import the yaml files (one at a time), or just click the links below, which will redirect you directly to Swagger UI:
 
-- [Merchant API Spec](https://petstore.swagger.io/)
-- [Management API Spec](https://petstore.swagger.io/)
+- [Merchant API Spec](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/gustavooferreira/pgw-docs/master/openapi/merchant_api_spec.yaml)
+- [Management API Spec](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/gustavooferreira/pgw-docs/master/openapi/mgmt_api_spec.yaml)
 
 ---
 
