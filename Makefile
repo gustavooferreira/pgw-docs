@@ -16,7 +16,9 @@ lint: ## Run linters
 .PHONY: clean
 clean: ## Remove generated pdfs
 	@rm -f README.pdf
-	@rm -f DESIGN_DOC.pdf
+	@rm -f SYSTEM_DESIGN.pdf
+	@rm -f SETUP_GUIDE.pdf
+	@rm -f USAGE.pdf
 
 
 .PHONY: generate-imgs
@@ -28,7 +30,9 @@ generate-imgs: ## Generate diagram images
 .PHONY: generate-pdfs
 generate-pdf: ## Generates PDF docs
 	@pandoc README.md -s -o README.pdf
-	@pandoc DESIGN_DOC.md -s -o DESIGN_DOC.pdf
+	@pandoc SYSTEM_DESIGN.md -s -o SYSTEM_DESIGN.pdf
+	@pandoc SETUP_GUIDE.md -s -o SETUP_GUIDE.pdf
+	@pandoc USAGE.md -s -o USAGE.pdf
 
 
 # ##############
@@ -38,12 +42,12 @@ generate-pdf: ## Generates PDF docs
 
 .PHONY: start-docker-env
 start-docker-env: ## Set up and run docker environment
-	@docker-compose -f docker/docker-compose.yaml -p news_app up -d
+	@docker-compose -f docker/docker-compose.yaml -p pgw_app up -d
 
 
 .PHONY: stop-docker-env
 stop-docker-env: ## Tear down docker environment
-	@docker-compose -f docker/docker-compose.yaml -p news_app down
+	@docker-compose -f docker/docker-compose.yaml -p pgw_app down
 
 
 ##############################################################

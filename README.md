@@ -1,6 +1,6 @@
 # Payment Gateway Exercise - Documentation
 
-This repository holds all documentation related to the Payment Gateway System.
+This repository holds all documentation related to the Payment Gateway exercise.
 
 - [Design document](SYSTEM_DESIGN.md)
 - [Setup guide](SETUP_GUIDE.md)
@@ -24,8 +24,6 @@ To view the specs, either use [Swagger Editor](https://editor.swagger.io/) and i
 # Links to other repositories
 
 This application was split into several repositories, below are the links to each one of them.
-
-The names of the repositories are unnecessarily long because github doesn't support the concept of grouping like gitlab does.
 
 Repositories:
 
