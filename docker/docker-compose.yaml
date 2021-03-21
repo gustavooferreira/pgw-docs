@@ -1,1 +1,15 @@
 version: "3.9"
+services:
+  auth_service:
+    image: pgw/auth-api-server:latest
+    restart: always
+    environment:
+      - PGW_AUTH_APP_DATABASE_FILENAME=/db_creds.yaml
+    volumes:
+     - ./auth-service/db_creds.yaml:/db_creds.yaml:ro
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
