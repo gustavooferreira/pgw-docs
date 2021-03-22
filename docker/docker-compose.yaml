@@ -9,6 +9,15 @@ services:
      - ./auth-service/db_creds.yaml:/db_creds.yaml:ro
     networks:
       - backend
+  payment_processor_service:
+    image: pgw/payment-processor-api-server:latest
+    restart: always
+    environment:
+      - PGW_PAYMENT_PROCESSOR_APP_OPTIONS_CREDITCARDS_FILENAME=/edge_cases_credit_cards.yaml
+    volumes:
+     - ./payment-processor-service/edge_cases_credit_cards.yaml:/edge_cases_credit_cards.yaml:ro
+    networks:
+      - backend
 
 networks:
   backend:
