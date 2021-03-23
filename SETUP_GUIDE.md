@@ -12,6 +12,8 @@ To build the images, all you need to do is clone each service's repo, and while 
 make build-docker
 ```
 
+**NOTE:** If you try to build these docker images on a Mac with a M1 processor you might face issues. On line 20 of the `Dockerfiles` I'm pinning the architecture to x86-64. If you face issues, please remove `GOARCH=amd64` from the `go build` command.
+
 Once you have all the 3 images in your local docker images cache, you can start the environment.
 
 To start the development environment please run the following command:
