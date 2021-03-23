@@ -42,6 +42,10 @@ Because this system also generates unique IDs upon approval of payment requests,
 
 The unique IDs are generated based on `UUID v4`.
 
+One of the exercise requirements was to fail on certain conditions for certain credit cards to allow for testing of edge cases.
+Instead of hardcoding this logic on the `payment gateway service` I decided to move this logic to the `payment processor service` as I believe this functionality sits better in there. We still have the ability to test for these use cases, we don't polute the codebase of the `payment gateway service` with hardcoded values for testing purposes and we have the flexibility to change these credit card numbers and reasons to fail at will as they are read from a yaml file on startup.
+I was only able to move this functionality to the `payment processor service` because for every request the `payment gateway service` receives, it in turn performs a request to the `payment processor service`, just like how it would happen in the real world.
+
 Finally, for the main service, the `payment gateway service` we rely on a database to keep track of all transactions and current state for each transaction.
 
 I've decided to implement 2 APIs. One that is meant to be used by the merchants/clients, and another one that is meant to be used by the management team/back office team. The merchants API implements all the endpoint specified by the exercise requirements and are defined based on the OpenAPI specifications.
@@ -77,3 +81,24 @@ Normally, I have 3 branches `master`, `test` and `develop` and I usually branch 
 For this project, I will not be doing that given the extra work and the fact that I'm not collaborating with anyone else. Instead, I'll be committing frequently to the master branch.
 
 This applies to all repos belonging to this project.
+
+## Extra points
+
+I've completed all bonus points:
+
+- [x] Implement Luhn check on credit card number
+- [x] Merchant authentication
+- [x] Application logging
+- [x] Containerization
+
+I've added a few extra things:
+
+- Created a simple auth service to simulate authentications with external systems
+- Created a payment processor simulator
+- Implemented month/year expiry checks for credit cards
+- All logs are in json for easy of parsing by a log aggregator like splunk or elasticsearch (logging in json is best practices)
+- All APIs are defined using an OpenAPI spec file. The merchant and management APIs for the `payment gateway service` are stored in this repo, and the API specs for the auth and payment processor services sit in their own repos
+- Added a management API to allow us to check transactions
+- Provided a docker-compose file and respective configuration to bring the whole system up ready to be explored
+- All APIs have healthcheck endpoints as these are pretty much mandatory for any service in production that will sit behind a load balancer and even for monitoring purposes.
+- Provided extensive documentation about the system design decision, how to setup an environment and usage examples.
