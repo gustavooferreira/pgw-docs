@@ -86,7 +86,7 @@ This applies to all repos belonging to this project.
 
 I've completed all bonus points:
 
-- [x] Implement Luhn check on credit card number
+- [x] Implement Luhn check on credit card numbers
 - [x] Merchant authentication
 - [x] Application logging
 - [x] Containerization
@@ -94,11 +94,11 @@ I've completed all bonus points:
 I've added a few extra things:
 
 - [x] Created a simple auth service to simulate authentications with external systems
-- [x] Created a payment processor simulator
+- [x] Created a payment processor simulator/mock
 - [x] Implemented month/year expiry checks for credit cards
 - [x] All logs are in json for easy of parsing by a log aggregator like splunk or elasticsearch (logging in json is best practices)
 - [x] All APIs are defined using an OpenAPI spec file. The merchant and management APIs for the `payment gateway service` are stored in this repo, and the API specs for the auth and payment processor services sit in their own repos
 - [x] Added a management API to allow us to check transactions
-- [x] Provided a docker-compose file and respective configuration to bring the whole system up ready to be explored
+- [x] Provided a docker-compose file and respective configuration to bring the whole system up, ready to be explored
 - [x] All APIs have healthcheck endpoints as these are pretty much mandatory for any service in production that will sit behind a load balancer and even for monitoring purposes
-- [x] Provided extensive documentation about the system design decision, how to setup an environment and usage examples
+- [x] Provided extensive documentation about the system design decisions, how to setup the environment and usage examples
