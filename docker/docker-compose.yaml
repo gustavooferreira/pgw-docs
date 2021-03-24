@@ -18,6 +18,18 @@ services:
      - ./payment-processor-service/edge_cases_credit_cards.yaml:/edge_cases_credit_cards.yaml:ro
     networks:
       - backend
+  database:
+    image: mysql:8
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=pgw
+      - MYSQL_USER=pgw_client
+      - MYSQL_PASSWORD=password
+    volumes:
+     - ./payment-gateway-service/dump.sql:/docker-entrypoint-initdb.d/dump.sql:ro
+    networks:
+      - backend
 
 networks:
   backend:

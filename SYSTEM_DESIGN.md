@@ -96,6 +96,7 @@ I've added a few extra things:
 - [x] Created a simple auth service to simulate authentications with external systems
 - [x] Created a payment processor simulator/mock
 - [x] Implemented month/year expiry checks for credit cards
+- [x] Currency support check. By default, app supports EUR, USD and GBP currencies. No capture or refunds are allowed with a currency which was not allowed by the authorise action.
 - [x] All logs are in json for easy of parsing by a log aggregator like splunk or elasticsearch (logging in json is best practices)
 - [x] All APIs are defined using an OpenAPI spec file. The merchant and management APIs for the `payment gateway service` are stored in this repo, and the API specs for the auth and payment processor services sit in their own repos
 - [x] Added a management API to allow us to check transactions
