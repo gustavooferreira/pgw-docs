@@ -6,7 +6,7 @@ services:
     environment:
       - PGW_AUTH_APP_DATABASE_FILENAME=/db_creds.yaml
     volumes:
-     - ./auth-service/db_creds.yaml:/db_creds.yaml:ro
+      - ./auth-service/db_creds.yaml:/db_creds.yaml:ro
     networks:
       - backend
   payment_processor_service:
@@ -15,7 +15,7 @@ services:
     environment:
       - PGW_PAYMENT_PROCESSOR_APP_OPTIONS_CREDITCARDS_FILENAME=/edge_cases_credit_cards.yaml
     volumes:
-     - ./payment-processor-service/edge_cases_credit_cards.yaml:/edge_cases_credit_cards.yaml:ro
+      - ./payment-processor-service/edge_cases_credit_cards.yaml:/edge_cases_credit_cards.yaml:ro
     networks:
       - backend
   database:
@@ -27,9 +27,26 @@ services:
       - MYSQL_USER=pgw_client
       - MYSQL_PASSWORD=password
     volumes:
-     - ./payment-gateway-service/dump.sql:/docker-entrypoint-initdb.d/dump.sql:ro
+      - ./payment-gateway-service/dump.sql:/docker-entrypoint-initdb.d/dump.sql:ro
     networks:
       - backend
+  payment_gateway_service:
+    image: pgw/payment-gateway-api-server:latest
+    restart: always
+    environment:
+      - PGW_PAYMENT_GATEWAY_APP_DATABASE_HOST=database
+      - PGW_PAYMENT_GATEWAY_APP_DATABASE_USERNAME=pgw_client
+      - PGW_PAYMENT_GATEWAY_APP_DATABASE_PASSWORD=password
+      - PGW_PAYMENT_GATEWAY_APP_DATABASE_DBNAME=pgw
+      - PGW_PAYMENT_GATEWAY_APP_AUTHSERVICE_HOST=auth_service
+      - PGW_PAYMENT_GATEWAY_APP_PPROCESSORSERVICE_HOST=payment_processor_service
+    networks:
+      - backend
+    ports:
+      - 9000:8080
+      - 9001:8081
+    depends_on:
+      - database
 
 networks:
   backend:

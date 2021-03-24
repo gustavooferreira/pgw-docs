@@ -22,6 +22,14 @@ To start the development environment please run the following command:
 make start-docker-env
 ```
 
+Once the environment is started, you will need to wait around 30 to 40 seconds for the MySQL database to be fully ready. The Payment gateway service won't be operational until the database is ready.
+
+Only start exploring the environment once you get a 200 response on the `Mgmt API` healthcheck:
+
+```bash
+curl -i http://localhost:9001/api/v1/healthcheck
+```
+
 To stop the development environment please run the following command:
 
 ```bash
