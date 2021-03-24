@@ -24,8 +24,10 @@ The response should look like this:
 
 To request an authorisation of a payment:
 
+Note that the credit card number supplied will failed as per the edge case requirements in the exercise.
+
 ```bash
-curl -X POST -s http://localhost:9000/api/v1/authorise -d '{"":""}' | jq .
+curl -i -X POST -u bill:pass1 http://localhost:9000/api/v1/authorise -d '{"credit_card": {"name":"customer1", "number": 4000000000000119, "expiry_month":10, "expiry_year":2030, "cvv":123}, "currency": "EUR", "amount": 10.50}'
 ```
 
 ---
