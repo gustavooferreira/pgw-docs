@@ -126,6 +126,7 @@ CREATE TABLE `states` (
 
 LOCK TABLES `states` WRITE;
 /*!40000 ALTER TABLE `states` DISABLE KEYS */;
+INSERT INTO `states` VALUES (1,'Authorised'),(2,'Voided'),(3,'Captured'),(4,'Refunded');
 /*!40000 ALTER TABLE `states` ENABLE KEYS */;
 UNLOCK TABLES;
 
