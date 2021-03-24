@@ -1,3 +1,298 @@
 openapi: 3.0.3
 info:
   title: Payment Gateway - Merchant API
+  description: |
+    This API provides merchants the necessary endpoints to carry transactions.
+  version: 1.0.0
+  contact:
+    name: Gustavo Ferreira
+    email: gustavojcoferreira@gmail.com
+servers:
+- url: http://localhost:{port}{basePath}
+  description: Local development
+  variables:
+    port:
+      default: '8080'
+      enum:
+      - '8080'
+    basePath:
+      default: '/api/v1'
+      enum:
+      - '/api/v1'
+tags:
+- name: payments
+  description: Payment processing operations
+security:
+  - BasicAuth: []
+paths:
+  /authorise:
+    post:
+      tags:
+      - payments
+      summary: Authorise payment
+      description: This endpoint is used to get an authorisation to charge the provided credit card.
+      requestBody:
+        description: authorisation details
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/AuthorisationDetails'
+      responses:
+        '200':
+          description: |
+            This endpoint returns 200 for both authorised and unautherised payments. The body of the response will
+            report whether the payment was authorised or not.
+            
+            The 200 status code means that the request was processed successfully but does not mean the transaction was authorised.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /capture:
+    post:
+      tags:
+      - payments
+      summary: Capture payment
+      description: This endpoint is used to consummate a authorised payment.
+      requestBody:
+        description: charge details
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/TransactionDetails'
+      responses:
+        '200':
+          description: |
+            This endpoint returns 200 for both successful and failed charges. The body of the response will
+            report whether the call was successful or not.
+
+            The 200 status code means that the request was processed successfully but does not mean the card was successfully charged.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /void:
+    post:
+      tags:
+      - payments
+      summary: void payment
+      description: This endpoint is used to void previous authorisations.
+      requestBody:
+        description: void details
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/VoidRequest'
+      responses:
+        '200':
+          description: |
+            This endpoint returns 200 for both successful and failed calls. The body of the response will
+            report whether the call was successful or not.
+
+            The 200 status code means that the request was processed successfully but does not mean the card was successfully charged.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoidResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /refund:
+    post:
+      tags:
+      - payments
+      summary: refund payment
+      description: This endpoint is used to refund previous charges.
+      requestBody:
+        description: refund details
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/TransactionDetails'
+      responses:
+        '200':
+          description: |
+            This endpoint returns 200 for both successful and failed refunds. The body of the response will
+            report whether the call was successful or not.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalError'
+components:
+  securitySchemes:
+      BasicAuth:
+        type: http
+        scheme: basic
+  responses:
+    BadRequest:
+      description: Invalid Parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiErrorResponse'
+    InternalError:
+      description: Internal Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiErrorResponse'
+    Unauthorized:
+      description: Unauthorised request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiErrorResponse'
+    Forbidden:
+      description: Invalid credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiErrorResponse'
+  schemas:
+    ApiErrorResponse:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          type: string
+          description: Message explaining the error reason.
+    AuthorisationDetails:
+      type: object
+      required:
+      - credit_card
+      - currency
+      - amount
+      properties:
+        credit_card:
+          $ref: '#/components/schemas/CreditCard'
+        currency:
+          type: string
+        amount:
+          type: number
+    CreditCard:
+      type: object
+      required:
+      - name
+      - number
+      - expiry_month
+      - expiry_yeah
+      - cvv
+      properties:
+        name:
+          type: string
+        number:
+          type: integer
+          format: int64
+        expiry_month:
+          type: integer
+          minimum: 1
+          maximum: 12
+        expiry_year:
+          type: integer
+          minimum: 2000
+        cvv:
+          type: integer
+          minimum: 1
+          maximum: 999
+    AuthResponse:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          description: Authorised payment returns a status "success", and unauthorised payment returns status "fail".
+          type: string
+          enum:
+          - success
+          - fail
+        error_message:
+          description: In case of a failed attempt to authorise a transaction, this error message will be provided.
+          type: string
+        authorisation_id:
+          description: If the charge is authorised it returns an authorisation ID.
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+    TransactionDetails:
+      type: object
+      required:
+      - authorisation_id
+      - amount
+      properties:
+        authorisation_id:
+          type: string
+        amount:
+          type: number
+    TransactionResponse:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          enum:
+          - success
+          - fail
+        error_message:
+          description: In case of a failed attempt to charge the card, this error message will be provided.
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+    VoidRequest:
+      type: object
+      required:
+      - authorisation_id
+      properties:
+        authorisation_id:
+          type: string
+    VoidResponse:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          enum:
+          - success
+          - fail
+        error_message:
+          description: In case of a failed attempt to void a previous authorised transaction, this error message will be provided.
+          type: string

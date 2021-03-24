@@ -1,3 +1,197 @@
 openapi: 3.0.3
 info:
   title: Payment Gateway - Management API
+  description: |
+    This API provides back office with a few helper endpoints to inspect authorisations granted and transactions processed.
+  version: 1.0.0
+  contact:
+    name: Gustavo Ferreira
+    email: gustavojcoferreira@gmail.com
+servers:
+- url: http://localhost:{port}{basePath}
+  description: Local development
+  variables:
+    port:
+      default: '8080'
+      enum:
+      - '8080'
+    basePath:
+      default: '/api/v1'
+      enum:
+      - '/api/v1'
+tags:
+- name: maintenance
+  description: Service maintenance operations
+- name: authorisations
+  description: authorisations operations
+paths:
+  /healthcheck:
+    get:
+      tags:
+      - maintenance
+      summary: Check API service health
+      description: Returns status of the API service.
+      responses:
+        '200':
+          description: Service is OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthcheckResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /authorisations:
+    get:
+      tags:
+      - authorisations
+      summary: List authorisations
+      description: This endpoint is used to get a list of all authorisations approved. It does not support pagination.
+      responses:
+        '200':
+          description: Return list of all authorisations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorisationsList'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /authorisations/{id}:
+    get:
+      tags:
+      - authorisations
+      summary: Detailed authorisation
+      description: This endpoint returns a detailed authorisation.
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Return detailed authorisation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorisationDetail'
+        '500':
+          $ref: '#/components/responses/InternalError'
+components:
+  responses:
+    BadRequest:
+      description: Invalid Parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiErrorResponse'
+    InternalError:
+      description: Internal Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiErrorResponse'
+  schemas:
+    HealthcheckResponse:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          enum:
+          - OK
+    ApiErrorResponse:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          type: string
+          description: Message explaining the error reason.
+    AuthorisationsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/AuthorisationItem'
+    AuthorisationItem:
+      type: object
+      required:
+      - id
+      - state
+      - merchant_name
+      - amount
+      - currency
+      properties:
+        id:
+          type: string
+        state:
+          type: string
+        merchant_name:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+    AuthorisationDetail:
+      type: object
+      required:
+      - id
+      - state
+      - merchant_name
+      - amount
+      - currency
+      - credit_card
+      properties:
+        id:
+          type: string
+        state:
+          type: string
+        merchant_name:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        credit_card:
+          $ref: '#/components/schemas/CreditCard'
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionDetail'
+    TransactionDetail:
+      type: object
+      required:
+      - id
+      - type
+      - amount
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        amount:
+          type: number
+    CreditCard:
+      type: object
+      required:
+      - name
+      - number
+      - expiry_month
+      - expiry_yeah
+      - cvv
+      properties:
+        name:
+          type: string
+        number:
+          type: integer
+          format: int64
+        expiry_month:
+          type: integer
+          minimum: 1
+          maximum: 12
+        expiry_year:
+          type: integer
+          minimum: 2000
+        cvv:
+          type: integer
+          minimum: 1
+          maximum: 999
